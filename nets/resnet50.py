@@ -10,11 +10,11 @@ from torch.autograd import Variable
 
 class Bottleneck(nn.Module):
     '''
-    包含三种卷积层
-    conv1-压缩通道数
-    conv2-提取特征
-    conv3-扩展通道数
-    这种结构可以更好的提取特征，加深网络，并且可以减少网络的参数量。
+    Contains three convolutional layers:
+    conv1 - Reduces the number of channels
+    conv2 - Extracts features
+    conv3 - Expands the number of channels
+    This structure helps better feature extraction, deepens the network, and reduces the number of parameters.
     '''
 
     expansion = 4
@@ -36,21 +36,22 @@ class Bottleneck(nn.Module):
 
     def forward(self, x):
         '''
-        这块实现了残差块结构
+        Implements the residual block structure.
 
-        ResNet50有两个基本的块，分别名为Conv Block和Identity Block，renet50就是利用了这两个结构堆叠起来的。
-        它们最大的差距是残差边上是否有卷积。
+        ResNet50 has two basic blocks: Conv Block and Identity Block.
+        ResNet50 is built by stacking these two blocks.
+        The main difference between them is whether the shortcut path has a convolution layer.
 
-        Identity Block是正常的残差结构，其残差边没有卷积，输入直接与输出相加；
-        Conv Block的残差边加入了卷积操作和BN操作（批量归一化），其作用是可以通过改变卷积操作的步长通道数，达到改变网络维度的效果。
+        Identity Block: Standard residual structure where the shortcut does not have a convolution;
+        Conv Block: The shortcut includes a convolution and BN (Batch Normalization),
+        which allows changing the dimensions of the network.
 
-        也就是说
-        Identity Block输入维度和输出维度相同，可以串联，用于加深网络的；
-        Conv Block输入和输出的维度是不一样的，所以不能连续串联，它的作用是改变网络的维度。
-        :param
-        x:输入数据
-        :return:
-        out:网络输出结果
+        That is:
+        - Identity Block is used when input and output dimensions are the same, allowing deep stacking;
+        - Conv Block is used to change dimensions and cannot be stacked consecutively.
+
+        :param x: Input data
+        :return: Output result from the network
         '''
         residual = x
 
@@ -77,26 +78,26 @@ class Bottleneck(nn.Module):
 class ResNet(nn.Module):
     def __init__(self, block, layers, num_classes=10):
         # -----------------------------------#
-        #   假设输入进来的图片是600,600,3
+        #   Assume input image is 600x600x3
         # -----------------------------------#
         self.inplanes = 64
         super(ResNet, self).__init__()
 
-        # 600,600,3 -> 300,300,64
+        # 600x600x3 -> 300x300x64
         self.conv1 = nn.Conv2d(3, 64, kernel_size=3, stride=1, padding=2, bias=False)
         self.bn1 = nn.BatchNorm2d(64)
         self.relu = nn.ReLU(inplace=True)
 
-        # 300,300,64 -> 150,150,64
+        # 300x300x64 -> 150x150x64
         self.maxpool = nn.MaxPool2d(kernel_size=3, stride=2, padding=0, ceil_mode=True)
 
-        # 150,150,64 -> 150,150,256
+        # 150x150x64 -> 150x150x256
         self.layer1 = self._make_layer(block, 64, layers[0])
-        # 150,150,256 -> 75,75,512
+        # 150x150x256 -> 75x75x512
         self.layer2 = self._make_layer(block, 128, layers[1], stride=2)
-        # 75,75,512 -> 38,38,1024 到这里可以获得一个38,38,1024的共享特征层
+        # 75x75x512 -> 38x38x1024 (shared feature layer)
         self.layer3 = self._make_layer(block, 256, layers[2], stride=2)
-        # self.layer4被用在classifier模型中
+        # self.layer4 is used in the classifier model
         self.layer4 = self._make_layer(block, 512, layers[3], stride=2)
 
         self.avgpool = nn.AdaptiveAvgPool2d((1, 1))
@@ -112,31 +113,30 @@ class ResNet(nn.Module):
 
     def _make_layer(self, block, planes, blocks, stride=1):
         '''
-        用于构造Conv Block 和 Identity Block的堆叠
-        :param block:就是上面的Bottleneck，用于实现resnet50中最基本的残差块结构
-        :param planes:输出通道数
-        :param blocks:残差块重复次数
-        :param stride:步长
-        :return:
-        构造好的Conv Block 和 Identity Block的堆叠网络结构
+        Builds stacked Conv Blocks and Identity Blocks
+        :param block: The Bottleneck block defined above (basic unit in ResNet50)
+        :param planes: Output channel count
+        :param blocks: Number of repeated residual blocks
+        :param stride: Convolution stride
+        :return: Stacked Conv and Identity Block structure
         '''
         downsample = None
         # -------------------------------------------------------------------#
-        #   当模型需要进行高和宽的压缩的时候，就需要用到残差边的downsample
+        #   When downsampling is needed (reduce H and W), use downsample in the shortcut path
         # -------------------------------------------------------------------#
 
-        # 边（do构建Conv Block的残差wnsample）
-        if stride != 1 or self.inplanes != planes * block.expansion:# block.expansion=4
+        # Shortcut path (downsample for Conv Block)
+        if stride != 1 or self.inplanes != planes * block.expansion:  # block.expansion = 4
             downsample = nn.Sequential(
                 nn.Conv2d(self.inplanes, planes * block.expansion, kernel_size=1, stride=stride, bias=False),
                 nn.BatchNorm2d(planes * block.expansion),
             )
-        layers = [] # 用于堆叠Conv Block 和 Identity Block
-        # 添加一层Conv Block
+        layers = []  # Stack of Conv and Identity Blocks
+        # Add a Conv Block
         layers.append(block(self.inplanes, planes, stride, downsample))
-        # 添加完后输入维度变了，因此改变inplanes（输入维度）
+        # Update input dimensions after Conv Block
         self.inplanes = planes * block.expansion
-        # 添加blocks层 Identity Block
+        # Add remaining Identity Blocks
         for i in range(1, blocks):
             layers.append(block(self.inplanes, planes))
         return nn.Sequential(*layers)
@@ -161,14 +161,15 @@ class ResNet(nn.Module):
 def resnet50():
     model = ResNet(Bottleneck, [3, 4, 6, 3])
     # ----------------------------------------------------------------------------#
-    #   获取特征提取部分，从conv1到model.layer3，最终获得一个38,38,1024的特征层
+    #   Get feature extraction part: from conv1 to layer3, producing 38x38x1024 feature map
     # ----------------------------------------------------------------------------#
     features = list([model.conv1, model.bn1, model.relu, model.maxpool, model.layer1, model.layer2, model.layer3])
     # ----------------------------------------------------------------------------#
-    #   获取分类部分，从model.layer4到model.avgpool
+    #   Get classification part: from layer4 to avgpool
     # ----------------------------------------------------------------------------#
     classifier = list([model.layer4, model.avgpool])
 
     features = nn.Sequential(*features)
     classifier = nn.Sequential(*classifier)
     return features, classifier
+
