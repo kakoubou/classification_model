@@ -92,8 +92,8 @@ Thumbs.db
 *.tmp
 
 
-log/*
-!log/.gitkeep
+logs/*
+!logs/.gitkeep
 
 
 data/*/*
