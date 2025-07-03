@@ -21,7 +21,7 @@ transform = transforms.Compose([
 
 # Load the model
 model = ResNet(Bottleneck, [3, 4, 6, 3], num_classes=config["num_classes"])
-checkpoint_path = 'logs/model_epoch100.pth'
+checkpoint_path = config["test_model_path"]
 model.load_state_dict(torch.load(checkpoint_path, map_location=torch.device('cpu')))
 
 # Evaluate the model, generate and save confusion matrix and accuracy

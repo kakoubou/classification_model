@@ -1,6 +1,7 @@
 cuda: True
 pre_train: True
-pre_train_path: 'logs/resnet50_pretrain.pth' 
+pre_train_path: './logs/resnet50_pretrain.pth' 
+test_model_path: './logs/model_epoch100.pth'
 CosineLR: True
 lr: 1e-3
 Batch_size: 8
