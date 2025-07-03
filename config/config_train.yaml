@@ -1,0 +1,14 @@
+cuda: True
+pre_train: True
+pre_train_path: 'logs/resnet50_pretrain.pth' 
+CosineLR: True
+lr: 1e-3
+Batch_size: 8
+Init_Epoch: 0
+Fin_Epoch: 150
+
+train_dataset_path: "./data/train"
+test_dataset_path: "./data/test"
+
+num_workers: 0
+num_classes: 2
