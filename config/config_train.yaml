@@ -6,9 +6,10 @@ CosineLR: True
 lr: 1e-3
 Batch_size: 8
 Init_Epoch: 0
-Fin_Epoch: 150
+Fin_Epoch: 100
 
 train_dataset_path: "./data/train"
+val_dataset_path: "./data/val"
 test_dataset_path: "./data/test"
 
 num_workers: 0

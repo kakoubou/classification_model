@@ -17,6 +17,7 @@ from .dataset import ImgAugmentedDataset
 from .train_utils import fit_one_epoch
 from .evaluate import test_model
 
+
 __all__ = [
     "seq",
     "ImgAugmentedDataset",

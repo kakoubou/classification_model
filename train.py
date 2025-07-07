@@ -7,7 +7,6 @@ from torchvision import transforms, datasets
 from nets.resnet50 import Bottleneck, ResNet
 from utils import seq, ImgAugmentedDataset, fit_one_epoch
 
-
 if __name__ == '__main__':
     config_path = Path(__file__).parent / "config" / "config_train.yaml"
     with open(config_path, 'r') as file:
@@ -25,10 +24,10 @@ if __name__ == '__main__':
     transform_test = transforms.Compose([transforms.Resize((500, 500)), transforms.ToTensor()])
 
     train_dataset = ImgAugmentedDataset(config["train_dataset_path"], transform=transform_train, augmentor=seq)
-    test_dataset = datasets.ImageFolder(config["test_dataset_path"], transform=transform_test)
+    val_dataset = datasets.ImageFolder(config["val_dataset_path"], transform=transform_test)
 
     train_loader = DataLoader(train_dataset, batch_size=config["Batch_size"], shuffle=True, num_workers=config["num_workers"], pin_memory=True)
-    test_loader = DataLoader(test_dataset, batch_size=config["Batch_size"] // 2, shuffle=True, num_workers=config["num_workers"], pin_memory=True)
+    val_loader = DataLoader(val_dataset, batch_size=config["Batch_size"] // 2, shuffle=False, num_workers=config["num_workers"], pin_memory=True)
 
     optimizer = torch.optim.Adam(model.parameters(), lr=config["lr"])
     loss_fn = torch.nn.CrossEntropyLoss()
@@ -39,8 +38,9 @@ if __name__ == '__main__':
 
     for epoch in range(config["Init_Epoch"], config["Fin_Epoch"]):
         fit_one_epoch(model, loss_fn, epoch, len(train_loader), len(test_loader),
-                      train_loader, test_loader, config["Fin_Epoch"], cuda,
-                      optimizer, len(test_dataset))
+                      train_loader, val_loader, config["Fin_Epoch"], cuda,
+                      optimizer, len(val_dataset))
+
         scheduler.step()
 
         if epoch in [49, 99]:
