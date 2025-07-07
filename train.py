@@ -37,7 +37,7 @@ if __name__ == '__main__':
                  else torch.optim.lr_scheduler.StepLR(optimizer, step_size=1, gamma=0.92))
 
     for epoch in range(config["Init_Epoch"], config["Fin_Epoch"]):
-        fit_one_epoch(model, loss_fn, epoch, len(train_loader), len(test_loader),
+        fit_one_epoch(model, loss_fn, epoch, len(train_loader), len(val_loader),
                       train_loader, val_loader, config["Fin_Epoch"], cuda,
                       optimizer, len(val_dataset))
 

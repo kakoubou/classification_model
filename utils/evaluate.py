@@ -60,22 +60,3 @@ def test_model(model, test_dataset_path, transform, batch_size, save_dir="logs")
 
     return acc, cm
 
-def evaluate(model, data_loader, loss_fn, device):
-    model.eval()
-    total_loss, correct, total = 0.0, 0, 0
-
-    with torch.no_grad():
-        for imgs, labels in data_loader:
-            imgs, labels = imgs.to(device), labels.to(device)
-            outputs = model(imgs)
-            loss = loss_fn(outputs, labels)
-            total_loss += loss.item() * imgs.size(0)
-
-            preds = outputs.argmax(dim=1)
-            correct += (preds == labels).sum().item()
-            total += labels.size(0)
-
-    avg_loss = total_loss / total
-    accuracy = correct / total
-    return avg_loss, accuracy
-
