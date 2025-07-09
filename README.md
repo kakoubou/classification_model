@@ -85,6 +85,7 @@ os.chdir('/content/drive/MyDrive/classfication')
 accuracyは100%に達しました。
 
 <img src="images/image6.png" width="400" />
+
 ---
 
 ## 5. 付録
