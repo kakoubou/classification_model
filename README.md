@@ -1,4 +1,4 @@
-# 📄 レシートの分類モデル
+# レシートの分類モデル
 
 ---
 
@@ -13,7 +13,7 @@ ResNet50を用いた画像分類のディープラーニングプロジェクト
 
 <pre>
 .
-├── config/             # プロジェクト内の各種パラメータの数値を定義する yamlファイルを含む
+├── config/             # プロジェクト内の各種パラメータの数値を定義するyamlファイルを含む
 ├── data/               # 学習・推論用の画像（コンビニレシート／非コンビニレシート）を含むフォルダ
 ├── images/             # README.md用画像置き場
 ├── logs/               # 事前学習済みモデルおよび学習・推論完了後の保存ファイルを配置するフォルダ
@@ -42,13 +42,13 @@ ResNet50を用いた画像分類のディープラーニングプロジェクト
 
 ---
 
-### 📷 クラス別画像例
+### クラス別画像例
 
 **Class 0：コンビニレシート画像の例**  
 <img src="images/image1.png" width="200"/> <img src="images/image2.png" width="200"/>
 
 **Class 1：非コンビニレシート画像の例**  
-<img src="images/image3.png" width="200"/> <img src="images/image4.png" width="200"/>
+<img src="images/image3.png" width="200"/> <img src="images/image4.png" width="250"/>
 
 ---
 
@@ -69,7 +69,7 @@ os.chdir('/content/drive/MyDrive/classfication')
 ```
 
 100 epochで学習を完了しました。  
-最後の数epochではaccuracyが**98.9%**を維持しており、  
+最後の数epochではaccuracyが98.9%を維持しており、  
 学習したモデルが検証データセット上で優れた分類性能を示していると考えられます。
 
 ![train_process](images/image5.png)
@@ -82,10 +82,9 @@ os.chdir('/content/drive/MyDrive/classfication')
 テストデータセットに対して推論を行い、混同行列（confusion matrix）を出力します。  
 
 結果は、テストセットの10枚の画像すべてが正しいラベルに分類されており、  
-accuracyは**100%**に達しました。
+accuracyは100%に達しました。
 
-![confusion_matrix](images/image6.png)
-
+<img src="images/image6.png" width="400" />
 ---
 
 ## 5. 付録
