@@ -69,8 +69,7 @@ os.chdir('/content/drive/MyDrive/classfication')
 ```
 
 100 epochで学習を完了しました。  
-最後の数epochではaccuracyが98.9%を維持しており、  
-学習したモデルが検証データセット上で優れた分類性能を示していると考えられます。
+最後の数epochではaccuracyが98.9%を維持しており、学習したモデルが検証データセット上で優れた分類性能を示していると考えられます。
 
 ![train_process](images/image5.png)
 
