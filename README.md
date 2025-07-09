@@ -89,6 +89,5 @@ accuracyは100%に達しました。
 
 ## 5. 付録
 
-本プロジェクトで使用したデータ水増しライブラリは [imgaug](https://github.com/aleju/imgaug) です  
-複数の水増し方法を組み合わせることでモデルの汎化能力を向上させています。
+本プロジェクトで使用したデータ水増しライブラリは [imgaug](https://github.com/aleju/imgaug) です。
 
