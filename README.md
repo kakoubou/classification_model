@@ -54,7 +54,7 @@ ResNet50を用いた画像分類のディープラーニングプロジェクト
 
 ## 4. モデル学習
 
-Google Colab を使用して学習を行いました。以下はその手順です：
+Google Colabは無料でGPUを利用できるため、GPUを用いた学習はGoogle Colabプラットフォームで実施しました。まず、プロジェクトのコードおよびデータをGoogleドライブにアップロードします。その後、Colab上で以下の手順に沿ってコードを実行し、Googleドライブに接続し、プロジェクトフォルダへ移動、Pythonの依存ライブラリをインストールし、train.pyを実行して学習を行います。
 
 ```python
 from google.colab import drive
